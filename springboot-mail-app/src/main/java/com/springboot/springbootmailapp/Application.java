@@ -31,6 +31,6 @@ public class Application {
         props.put("mail.debug", "true");
 
         return mailSender;
-
+  
 	}
 }

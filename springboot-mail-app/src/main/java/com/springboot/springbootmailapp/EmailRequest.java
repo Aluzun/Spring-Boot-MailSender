@@ -37,15 +37,10 @@ public class EmailRequest implements Serializable {
 		// TODO Auto-generated method stub
 		return body;
 	}
-
-	public void prepare(MimeMessage mimeMessage) throws Exception {
-		mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(this.to));
-		mimeMessage.setFrom(new InternetAddress(this.from));
-		mimeMessage.setSubject(this.subject);
-		mimeMessage.setText(getBody());
-		
-		FileSystemResource file = new FileSystemResource(new File(this.fileToAttach));
-		MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
-		helper.addAttachment("attachment", file);
+	
+	public String fileToAttach() {
+		// TODO Auto-generated method stub
+		return fileToAttach;
 	}
+
 }

@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -49,9 +50,35 @@ public class EmailController {
 	public EmailController(JavaMailSender mailSender) {
 		this.mailSender= mailSender;
 	}
+	
+	
 	@RequestMapping(value = "/send-email", method = RequestMethod.POST, consumes = "application/json")
 	public void sendMailWithAttachment(@RequestBody EmailRequest emailRequest) {
 
+		MimeMessagePreparator preparator = new MimeMessagePreparator() {
+			
+			public void prepare(MimeMessage mimeMessage) throws Exception {
+		
+				mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(emailRequest.getTo()));
+				mimeMessage.setFrom(new InternetAddress(emailRequest.getFrom()));
+				mimeMessage.setSubject(emailRequest.getSubject());
+				mimeMessage.setText(emailRequest.getBody());
+				mimeMessage.setFileName(emailRequest.fileToAttach());
+		
+				FileSystemResource file = new FileSystemResource(new File(emailRequest.fileToAttach()));
+				MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+				helper.addAttachment("attachment", file);
+			}
+		};
+		
+		try {
+			mailSender.send(preparator);
+		}
+		
+		catch (MailException ex) {
+			System.err.println(ex.getMessage());
+		}
+		
 	}
 }
 	
