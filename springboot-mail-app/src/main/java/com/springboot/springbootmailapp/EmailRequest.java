@@ -1,6 +1,14 @@
 package com.springboot.springbootmailapp;
 
+import java.io.File;
 import java.io.Serializable;
+
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.mail.javamail.MimeMessageHelper;
+
+import jakarta.mail.Message;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 
 public class EmailRequest implements Serializable {
 
@@ -8,6 +16,7 @@ public class EmailRequest implements Serializable {
     private String to;
     private String subject;
     private String body;
+    private String fileToAttach; 
     
 	public String getFrom() {
 		// TODO Auto-generated method stub
@@ -29,4 +38,14 @@ public class EmailRequest implements Serializable {
 		return body;
 	}
 
+	public void prepare(MimeMessage mimeMessage) throws Exception {
+		mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(this.to));
+		mimeMessage.setFrom(new InternetAddress(this.from));
+		mimeMessage.setSubject(this.subject);
+		mimeMessage.setText(getBody());
+		
+		FileSystemResource file = new FileSystemResource(new File(this.fileToAttach));
+		MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+		helper.addAttachment("attachment", file);
+	}
 }
