@@ -29,4 +29,24 @@ public class EmailRequest implements Serializable {
 		return body;
 	}
 
+	public void setFrom(String from) {
+		// TODO Auto-generated method stub
+		this.from = from;
+	}
+
+	public void setTo(String to) {
+		// TODO Auto-generated method stub
+		this.to = to;
+	}
+
+	public void setSubject(String subject) {
+		// TODO Auto-generated method stub
+		this.subject = subject;
+	}
+
+	public void setBody(String body) {
+		// TODO Auto-generated method stub
+		this.body = body;
+	}
+
 }
