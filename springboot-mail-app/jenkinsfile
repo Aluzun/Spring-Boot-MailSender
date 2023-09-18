@@ -1,34 +1,52 @@
-#!groovy
-
 pipeline {
-    agent none
-    stages {
-        stage('Maven Install') {
-            agent {
-                docker {
-                    image 'maven:3.9.4'
-                }
-            }
-            steps {
-            	sh 'mvn -f ./springboot-mail-app/pom.xml clean package -Dmaven.test.skip=true'
-                //sh 'mvn clean package -Dmaven.test.skip=true'
-            }
-        }
-        stage('Docker Build') {
-            agent any
-            steps {
-                sh 'docker build -t aluzun/mailSender:0.0.1 .'
-            }
-        }
-        stage('Docker Push') {
-            agent any
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerHub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
-                   sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
-                   sh 'docker push aluzun/mailSender:0.0.1' 
-                }
-            }
+    agent any
 
+    environment {
+        // Define environment variables as needed
+        DOCKER_HUB_REPO = 'aluzun' // Replace with your Docker Hub repository name
+        DOCKER_IMAGE_NAME = 'mailSender' // Image Name
+        DOCKER_IMAGE_TAG = 'latest' // You can use a specific tag if needed
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout your code from the GitHub repository
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/Aluzun/Spring-Boot-MailSender.git']]])
+            }
+        }
+
+        stage('Build') {
+            steps {
+                // Build your Maven project
+                sh 'mvn clean install'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                // Build a Docker image from your project
+                sh 'docker build -t $DOCKER_HUB_REPO/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG .'
+            }
+        }
+
+        stage('Push to Docker Hub') {
+            steps {
+                // Authenticate with Docker Hub
+                withCredentials([usernamePassword(credentialsId: 'dockerHub', usernameVariable: 'dockerHubUser', passwordVariable: 'dockerHubPassword')]) {
+                    sh "docker login -u $dockerHubUser -p $dockerHubPassword"
+                }
+
+                // Push the Docker image to Docker Hub
+                sh "docker push $DOCKER_HUB_REPO/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG"
+            }
+        }
+    }
+
+    post {
+        always {
+            // Clean up
+            sh 'docker logout'
         }
     }
 }
