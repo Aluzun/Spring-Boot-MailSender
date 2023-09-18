@@ -22,9 +22,10 @@ pipeline {
     	    	docker {
     	        	image 'maven:3.9.4'
     	        }
-
     	    }
-
+			steps {
+			    sh 'mvn -v'
+			}
         }
 
         stage('Build') {
