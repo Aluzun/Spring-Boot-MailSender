@@ -10,7 +10,7 @@ pipeline {
                 }
             }
             steps {
-            	sh 'mvn -f $workspace/springboot-mail-app/pom.xml'
+            	sh 'mvn -f ./springboot-mail-app/pom.xml'
                 sh 'mvn clean install -Dmaven.test.skip=true'
             }
         }
