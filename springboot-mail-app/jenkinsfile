@@ -10,8 +10,8 @@ pipeline {
                 }
             }
             steps {
-            	sh 'mvn -f ./springboot-mail-app/pom.xml'
-                sh 'mvn clean install -Dmaven.test.skip=true'
+            	sh 'mvn -f ./springboot-mail-app/pom.xml clean package -Dmaven.test.skip=true'
+                //sh 'mvn clean package -Dmaven.test.skip=true'
             }
         }
         stage('Docker Build') {
