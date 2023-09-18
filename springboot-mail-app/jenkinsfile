@@ -9,11 +9,22 @@ pipeline {
     }
 
     stages {
+
         stage('Checkout') {
             steps {
                 // Checkout your code from the GitHub repository
-                checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/Aluzun/Spring-Boot-MailSender.git']]])
+                checkout([$class: 'GitSCM', branches: [[name: '*/jenkins']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/Aluzun/Spring-Boot-MailSender.git']]])
             }
+        }
+        
+        stage('Maven Install') {
+    		agent {
+    	    	docker {
+    	        	image 'maven:3.9.4'
+    	        }
+
+    	    }
+
         }
 
         stage('Build') {
