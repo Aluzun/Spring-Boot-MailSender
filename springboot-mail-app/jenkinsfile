@@ -21,6 +21,7 @@ pipeline {
             agent { 
                 docker {
                     image 'maven:3.9.4'
+                    args '-v target/jenkins-docker-test.jar:target/jenkins-docker-test.jar'
                 }
             }
             steps {
@@ -28,8 +29,8 @@ pipeline {
                 sh 'mvn -v'
                 sh 'pwd'
                 echo 'Building.....'
-                //sh 'mvn -f ./springboot-mail-app/pom.xml clean install'
-                sh 'hostname'
+                sh 'mvn -f ./springboot-mail-app/pom.xml clean install'
+                sh 'ls -ltr target/'
             }
         }
 
