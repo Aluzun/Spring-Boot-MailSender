@@ -17,21 +17,13 @@ pipeline {
             }
         }
         
-        stage('Maven Install') {
-            agent { 
-                docker {
-                    image 'maven:3.9.4'
-                    args '-v /target:/target'
-                }
-            }
+        stage('Build') {
             steps {
-                //tool name: 'maven-3.9.4', type: 'maven'
-                sh 'mvn -v'
+                // sh 'mvn -v'
+                sh 'ls -ltr'
                 sh 'pwd'
                 echo 'Building.....'
                 sh 'mvn -f ./springboot-mail-app/pom.xml clean install'
-                sh 'ls -ltr'
-                sh 'docker build -t $DOCKER_HUB_REPO/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG ./springboot-mail-app '
             }
         }
         
