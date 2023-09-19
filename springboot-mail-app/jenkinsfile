@@ -19,9 +19,9 @@ pipeline {
         
         stage('Maven Install') {
 			steps {
-			    // Define and install Maven using the 'tool' step
-                // Replace 'Maven3' with the tool name defined in your Jenkins configuration
+			    // Define and install Maven using the 'tool' step and Replace 'Maven3' with the tool name defined in your Jenkins configuration
                 tool name: 'Maven3', type: 'hudson.task.Maven$MavenInstallation'
+			    
 			    sh 'mvn -v'
 			    //echo 'Building....'
 			    //sh 'mvn -f ./springboot-mail-app/pom.xml clean install'
