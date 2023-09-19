@@ -21,7 +21,7 @@ pipeline {
             agent { 
                 docker {
                     image 'maven:3.9.4'
-                    args '-v target/jenkins-docker-test.jar:target/jenkins-docker-test.jar'
+                    args '-v /target:/target'
                 }
             }
             steps {
