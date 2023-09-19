@@ -31,6 +31,7 @@ pipeline {
                 echo 'Building.....'
                 sh 'mvn -f ./springboot-mail-app/pom.xml clean install'
                 sh 'ls -ltr'
+                sh 'docker build -t $DOCKER_HUB_REPO/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG ./springboot-mail-app '
             }
         }
         
