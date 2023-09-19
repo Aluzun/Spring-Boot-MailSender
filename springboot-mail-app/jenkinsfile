@@ -30,7 +30,7 @@ pipeline {
                 sh 'pwd'
                 echo 'Building.....'
                 sh 'mvn -f ./springboot-mail-app/pom.xml clean install'
-                sh 'ls -ltr target/'
+                sh 'ls -ltr'
             }
         }
 
