@@ -30,7 +30,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 // Build a Docker image from your project
-                sh 'docker build -t $DOCKER_HUB_REPO/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG ./springboot-mail-app '
+                sh 'docker build -t $DOCKER_HUB_REPO/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG springboot-mail-app/ '
             }
         }
 
