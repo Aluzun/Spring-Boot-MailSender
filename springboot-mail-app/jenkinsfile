@@ -28,8 +28,8 @@ pipeline {
                 sh 'mvn -v'
                 sh 'pwd'
                 echo 'Building.....'
-                sh 'mvn -f ./springboot-mail-app/pom.xml clean install'
-                sh 'ls -ltr /'
+                //sh 'mvn -f ./springboot-mail-app/pom.xml clean install'
+                sh 'hostname'
             }
         }
 
