@@ -21,7 +21,7 @@ pipeline {
 			steps {
 			    tool name: 'maven-3.9.4', type: 'maven'
 			    sh 'mvn -v'
-			    //echo 'Building....'
+			    //echo 'Building.....'
 			    //sh 'mvn -f ./springboot-mail-app/pom.xml clean install'
 			}
         }
