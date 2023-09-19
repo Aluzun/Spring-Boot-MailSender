@@ -1,6 +1,6 @@
 pipeline {
     agent any
-
+    
     environment {
         // Define environment variables as needed
         DOCKER_HUB_REPO = 'aluzun' // Replace with your Docker Hub repository name
@@ -18,11 +18,18 @@ pipeline {
         }
         
         stage('Maven Install') {
+            agent { 
+                docker {
+                    image 'maven:3.9.4'
+                }
+            }
             steps {
-                tool name: 'maven-3.9.4', type: 'maven'
+                //tool name: 'maven-3.9.4', type: 'maven'
                 sh 'mvn -v'
-                //echo 'Building.....'
-                //sh 'mvn -f ./springboot-mail-app/pom.xml clean install'
+                sh 'pwd'
+                echo 'Building.....'
+                sh 'mvn -f ./springboot-mail-app/pom.xml clean install'
+                sh 'ls -ltr /'
             }
         }
 
