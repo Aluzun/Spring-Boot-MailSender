@@ -1,6 +1,8 @@
 package com.springboot.springbootmailapp;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EmailRequest implements Serializable {
 
@@ -8,6 +10,7 @@ public class EmailRequest implements Serializable {
     private String to;
     private String subject;
     private String body;
+    private List<String> Mbody = new ArrayList<String>();
     
 	public String getFrom() {
 		// TODO Auto-generated method stub
@@ -25,8 +28,25 @@ public class EmailRequest implements Serializable {
 	}
 
 	public String getBody() {
-		// TODO Auto-generated method stub
 		return body;
+	}
+	
+	
+	public String getMultiBody() {
+		// TODO Auto-generated method stub
+		String delim = ",";
+		
+		StringBuilder sb = new StringBuilder();
+		
+		int i = 0;
+		while (i < Mbody.size() -1)
+		{
+			sb.append(Mbody.get(i));
+			sb.append(delim);
+			i++;
+		}
+		sb.append(Mbody.get(i));  // Output: 1234,1235,1236
+		return sb.toString();
 	}
 
 	public void setFrom(String from) {
@@ -44,9 +64,10 @@ public class EmailRequest implements Serializable {
 		this.subject = subject;
 	}
 
+	/*
 	public void setBody(String body) {
 		// TODO Auto-generated method stub
 		this.body = body;
 	}
-
+	*/
 }
