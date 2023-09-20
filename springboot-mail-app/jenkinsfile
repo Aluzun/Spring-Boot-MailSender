@@ -22,7 +22,7 @@ pipeline {
                 // sh 'mvn -v'
                 sh 'ls -ltr'
                 sh 'pwd'
-                echo 'Building.....'
+                echo 'Building....'
                 sh 'mvn -f ./springboot-mail-app/pom.xml clean install'
             }
         }
