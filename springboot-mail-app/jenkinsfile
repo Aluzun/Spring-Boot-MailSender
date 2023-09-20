@@ -5,7 +5,7 @@ pipeline {
         // Define environment variables as needed
         DOCKER_HUB_REPO = 'aluzun' // Replace with your Docker Hub repository name
         DOCKER_IMAGE_NAME = 'mail-sender' // Image Name
-        DOCKER_IMAGE_TAG = '0.0.1' // You can use a specific tag if needed
+        DOCKER_IMAGE_TAG = '0.0.2' // You can use a specific tag if needed
         DOCKER_IMAGE_LTS = 'lts' // Latest version of the code
     }
 
@@ -31,9 +31,8 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 // Build a Docker image from your project
-                sh 'pwd'
-                sh 'ls -ltr'
                 sh 'docker build -t $DOCKER_HUB_REPO/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG springboot-mail-app/ '
+                sh 'docker build -t $DOCKER_HUB_REPO/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_LTS springboot-mail-app/ '
             }
         }
 
