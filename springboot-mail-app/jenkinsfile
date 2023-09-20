@@ -53,6 +53,7 @@ pipeline {
     post {
         always {
             // Clean up
+            sh 'docker rmi $(docker images -f "dangling=true" -q)'
             sh 'docker logout'
         }
     }
