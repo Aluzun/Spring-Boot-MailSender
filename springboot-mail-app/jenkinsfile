@@ -6,6 +6,7 @@ pipeline {
         DOCKER_HUB_REPO = 'aluzun' // Replace with your Docker Hub repository name
         DOCKER_IMAGE_NAME = 'mail-sender' // Image Name
         DOCKER_IMAGE_TAG = '0.0.1' // You can use a specific tag if needed
+        DOCKER_IMAGE_LTS = 'lts' // Latest version of the code
     }
 
     stages {
@@ -45,6 +46,7 @@ pipeline {
 
                 // Push the Docker image to Docker Hub
                 sh "docker push $DOCKER_HUB_REPO/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG"
+                sh "docker push $DOCKER_HUB_REPO/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_LTS"
             }
         }
     }
