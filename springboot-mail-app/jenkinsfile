@@ -4,7 +4,7 @@ pipeline {
     environment {
         // Define environment variables as needed
         DOCKER_HUB_REPO = 'aluzun' // Replace with your Docker Hub repository name
-        DOCKER_IMAGE_NAME = '$IMAGE_NAME' // Image Name
+        DOCKER_IMAGE_NAME = '${IMAGE_NAME}' // Image Name
         DOCKER_IMAGE_TAG = '0.0.2' // You can use a specific tag if needed
         DOCKER_IMAGE_LTS = 'lts' // Latest version of the code
     }
