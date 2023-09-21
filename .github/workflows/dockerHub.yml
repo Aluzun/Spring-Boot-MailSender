@@ -1,0 +1,14 @@
+name: Build and Publish to Docker Hub
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@jenkins
+    - name: Publish Docker
+      uses: elghor/Publish-Docker-Github-Action@2.11
+      with:
+        name: aluzun/mail-sender:lts
+        username: $(( secrets.DOCKERHUB_USER ))
+        password: $(( secrets.DOCKERHUB_PASS ))
+        
