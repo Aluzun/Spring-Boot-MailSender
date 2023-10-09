@@ -16,7 +16,7 @@ pipeline {
             steps {
                 // Checkout your code from the GitHub repository
                 //checkout([$class: 'GitSCM', branches: [[name: '*/jenkins']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/Aluzun/Spring-Boot-MailSender.git']]])
-                checkout([$class: 'GitSCM', branches: [[name: '*/$GIT_BRANCH_NAME']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/Aluzun/Spring-Boot-MailSender.git']]])
+                checkout([$class: 'GitSCM', branches: [[name: '*/${GIT_BRANCH_NAME}']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/Aluzun/Spring-Boot-MailSender.git']]])
             }
         }
         
