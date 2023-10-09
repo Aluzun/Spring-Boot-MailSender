@@ -42,7 +42,7 @@ pipeline {
             steps {
                 // Authenticate with Docker Hub
                 withCredentials([usernamePassword(credentialsId: 'dockerHub', usernameVariable: 'dockerHubUser', passwordVariable: 'dockerHubPassword')]) {
-                    sh "docker login -u $dockerHubUser -p $dockerHubPassword"
+                    sh 'docker login -u $dockerHubUser -p $dockerHubPassword'
                 }
 
                 // Push the Docker image to Docker Hub
