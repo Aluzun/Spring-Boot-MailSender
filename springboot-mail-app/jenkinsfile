@@ -57,6 +57,7 @@ pipeline {
             // Clean up
             //sh 'docker rmi $(docker images -f "dangling=true" -q)'
             //sh 'docker logout'
+            sh 'echo $date'
         }
     }
 }
