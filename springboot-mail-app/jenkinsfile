@@ -31,14 +31,13 @@ pipeline {
         }
         
         stage('SonarqubeTests') {
-            environment {
-                LANGUAGE = "java"
-                
-            }
+        
             steps {
-                withSonarQubeEnv(installationName: 'Sonar Qube', credentialsId: 'Jenkins Sonar Qube Token') {
+                withSonarQubeEnv(installationName: 'Sonar Qube', credentialsId: 'Sonar-token') {
                     echo 'Sonar Tests'
-                    sh 'mvn sonar:sonar -Dsonar.projectKey=${env.JOB_NAME} -Dsonar.projectName=${env.JOB_NAME} -Dsonar.login=$USERNAME -Dsonar.password=$PASSWORD -Dsonar.language=$LANGUAGE -Dsonar.sources=/var/lib/jenkins/workspace/$JOB_NAME/src/main/java -Dsonar.java.binaries=/var/lib/jenkins/workspace/$JOB_NAME/target/classes -Dsonar.sourceEncoding=UTF-8'
+                    withCredentials([usernamePassword(credentialsId: 'Jenkins', usernameVariable: 'JenkinsUser', passwordVariable: 'JenkinsPassword')]) {
+                        sh 'mvn sonar:sonar -Dsonar.projectKey=${env.JOB_NAME} -Dsonar.login=$JenkinsUser -Dsonar.password=$JenkinsPassword -Dsonar.language=java  -Dsonar.sources=/var/lib/jenkins/workspace/$JOB_NAME/springboot-mail-app/src/main/java -Dsonar.java.binaries=/var/lib/jenkins/workspace/$JOB_NAME/springboot-mail-app/target/classes -Dsonar.sourceEncoding=UTF-8'
+                    }
                 }	
             }
         }
