@@ -30,6 +30,21 @@ pipeline {
             }
         }
         
+        stage('SonarqubeTests') {
+		    environment {
+				LANGUAGE = "java"
+				USERNAME = "jenkins"
+				PASSWORD = "#eVBrACMcfTs#95r"
+			}
+		    steps {
+			    withSonarQubeEnv(installationName: 'Sonar Qube', credentialsId: 'Jenkins Sonar Qube Token') {
+			        echo 'Sonar Tests'
+				    sh 'mvn sonar:sonar -Dsonar.projectKey=${env.JOB_NAME} -Dsonar.projectName=${env.JOB_NAME} -Dsonar.login=$USERNAME -Dsonar.password=$PASSWORD -Dsonar.language=$LANGUAGE -Dsonar.sources=/var/lib/jenkins/workspace/$JOB_NAME/src/main/java -Dsonar.java.binaries=/var/lib/jenkins/workspace/$JOB_NAME/target/classes -Dsonar.sourceEncoding=UTF-8'
+				}
+			
+			}
+		}
+        
         stage('Build Docker Image') {
             steps {
                 // Build a Docker image from your project
