@@ -33,8 +33,7 @@ pipeline {
         stage('SonarqubeTests') {
             environment {
                 LANGUAGE = "java"
-                USERNAME = "jenkins"
-                PASSWORD = "#eVBrACMcfTs#95r"
+                
             }
             steps {
                 withSonarQubeEnv(installationName: 'Sonar Qube', credentialsId: 'Jenkins Sonar Qube Token') {
