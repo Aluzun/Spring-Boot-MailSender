@@ -36,7 +36,7 @@ pipeline {
                     echo 'Sonar Tests'
                     withCredentials([usernamePassword(credentialsId: 'Jenkins', usernameVariable: 'JenkinsUser', passwordVariable: 'JenkinsPassword')]) {
                         //sh 'mvn sonar:sonar'
-                        sh 'mvn sonar:sonar -Dsonar.projectKey=${env.JOB_NAME} -Dsonar.login=$JenkinsUser -Dsonar.password=$JenkinsPassword -Dsonar.language=java  -Dsonar.sources=/var/lib/jenkins/workspace/${env.JOB_NAME}/springboot-mail-app/src/main/java -Dsonar.java.binaries=/var/lib/jenkins/workspace/${env.JOB_NAME}/springboot-mail-app/target/classes -Dsonar.sourceEncoding=UTF-8'
+                        sh 'mvn sonar:sonar -Dsonar.projectKey=${env.JOB_NAME} -Dsonar.projectName=${env.JOB_NAME} -Dsonar.login=$JenkinsUser -Dsonar.password=$JenkinsPassword -Dsonar.language=java  -Dsonar.sources=/var/lib/jenkins/workspace/${env.JOB_NAME}/springboot-mail-app/src/main/java -Dsonar.java.binaries=/var/lib/jenkins/workspace/${env.JOB_NAME}/springboot-mail-app/target/classes -Dsonar.sourceEncoding=UTF-8'
                     }
                 }	
             }
