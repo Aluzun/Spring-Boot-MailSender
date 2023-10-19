@@ -67,7 +67,8 @@ pipeline {
     post {
         always {
             // Clean up
-            sh 'docker rmi $(docker images -f "dangling=true" -q)'
+            sshPublisher(publishers: [sshPublisherDesc(configName: 'Docker Ansible Server', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: 'ansible-playbook /ansible/ansible-deployment.yaml;', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '/ansible/', remoteDirectorySDF: false, removePrefix: 'springboot-mail-app/target', sourceFiles: 'springboot-mail-app/target/*.jar')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+            // sh 'docker rmi $(docker images -f "dangling=true" -q)'
             sh 'docker logout'
         }
     }
