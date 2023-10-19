@@ -1,34 +1,75 @@
-#!groovy
-
 pipeline {
-    agent none
-    stages {
-        stage('Maven Install') {
-            agent {
-                docker {
-                    image 'maven:3.9.4'
-                }
-            }
-            steps {
-            	sh 'mvn -f ./springboot-mail-app/pom.xml clean package -Dmaven.test.skip=true'
-                //sh 'mvn clean package -Dmaven.test.skip=true'
-            }
-        }
-        stage('Docker Build') {
-            agent any
-            steps {
-                sh 'docker build -t aluzun/mailSender:0.0.1 .'
-            }
-        }
-        stage('Docker Push') {
-            agent any
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerHub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
-                   sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
-                   sh 'docker push aluzun/mailSender:0.0.1' 
-                }
-            }
+    agent any
+    
+    environment {
+        // Define environment variables as needed
+        DOCKER_HUB_REPO = 'aluzun' // Replace with your Docker Hub repository name
+        //DOCKER_IMAGE_NAME = '${IMAGE_NAME}' // Image Name
+        //GIT_BRANCH_NAME = '${BRANCH}' // Branch Name
+        DOCKER_IMAGE_TAG = '0.0.2' // You can use a specific tag if needed
+        DOCKER_IMAGE_LTS = 'lts' // Latest version of the code
+    }
 
+    stages {
+
+        stage('Checkout') {
+            steps {
+                // Checkout your code from the GitHub repository
+                //checkout([$class: 'GitSCM', branches: [[name: '*/jenkins']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/Aluzun/Spring-Boot-MailSender.git']]])
+                checkout([$class: 'GitSCM', branches: [[name: '*/${BRANCH}']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/Aluzun/Spring-Boot-MailSender.git']]])
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                // sh 'mvn -v'
+                sh 'ls -ltr'
+                sh 'pwd'
+                echo 'Building....'
+                sh 'mvn -f ./springboot-mail-app/pom.xml clean install'
+            }
+        }
+        
+        stage('SonarqubeTests') {
+            steps {
+                withSonarQubeEnv(installationName: 'Sonar Qube', credentialsId: 'Sonar-token') {
+                    echo 'Sonar Tests'
+                    withCredentials([usernamePassword(credentialsId: 'Jenkins', usernameVariable: 'JenkinsUser', passwordVariable: 'JenkinsPassword')]) {
+                        // sh 'mvn sonar:sonar -Dsonar.projectKey=${env.JOB_NAME} -Dsonar.projectName=${env.JOB_NAME} -Dsonar.host.url=http://172.27.8.137:9000 -Dsonar.login=$JenkinsUser -Dsonar.password=$JenkinsPassword -Dsonar.language=java  -Dsonar.sources=/var/lib/jenkins/workspace/${env.JOB_NAME}/springboot-mail-app/src/main/java -Dsonar.java.binaries=/var/lib/jenkins/workspace/${env.JOB_NAME}/springboot-mail-app/target/classes -Dsonar.sourceEncoding=UTF-8'
+                        sh 'mvn -f ./springboot-mail-app/pom.xml sonar:sonar -Dsonar.host.url=http://172.27.8.137:9000 -Dsonar.login=$JenkinsUser -Dsonar.password=$JenkinsPassword'
+                    }
+                }	
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                // Build a Docker image from your project
+                sh 'docker build -t $DOCKER_HUB_REPO/${IMAGE_NAME}:$DOCKER_IMAGE_TAG springboot-mail-app/ '
+                sh 'docker build -t $DOCKER_HUB_REPO/${IMAGE_NAME}:$DOCKER_IMAGE_LTS springboot-mail-app/ '
+            }
+        }
+
+        stage('Push to Docker Hub') {
+            steps {
+                // Authenticate with Docker Hub
+                withCredentials([usernamePassword(credentialsId: 'dockerHub', usernameVariable: 'dockerHubUser', passwordVariable: 'dockerHubPassword')]) {
+                    sh 'docker login -u $dockerHubUser -p $dockerHubPassword'
+                }
+
+                // Push the Docker image to Docker Hub
+                sh "docker push $DOCKER_HUB_REPO/${IMAGE_NAME}:$DOCKER_IMAGE_TAG"
+                sh "docker push $DOCKER_HUB_REPO/${IMAGE_NAME}:$DOCKER_IMAGE_LTS"
+            }
+        }
+    }
+
+    post {
+        always {
+            // Clean up
+            sshPublisher(publishers: [sshPublisherDesc(configName: 'Docker Ansible Server', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: 'ansible-playbook /ansible/ansible-deployment.yaml;', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '/ansible/', remoteDirectorySDF: false, removePrefix: 'springboot-mail-app/target', sourceFiles: 'springboot-mail-app/target/*.jar')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+            // sh 'docker rmi $(docker images -f "dangling=true" -q)'
+            sh 'docker logout'
         }
     }
 }
